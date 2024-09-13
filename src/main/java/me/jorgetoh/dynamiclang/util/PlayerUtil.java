@@ -12,7 +12,7 @@ public class PlayerUtil {
         this.plugin = plugin;
     }
 
-    private String getPlayerLang(UUID playerId, String pluginName) {
+    /*private String getPlayerLang(UUID playerId, String pluginName) {
 
         String registeredLang = DynamicLang.hPlayers.get(playerId);
         if (registeredLang == null) {
@@ -20,6 +20,6 @@ public class PlayerUtil {
         }
 
         return "";
-    }
+    }*/
 
 }

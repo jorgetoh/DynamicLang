@@ -1,11 +1,13 @@
 package me.jorgetoh.dynamiclang.managers;
 
 import me.jorgetoh.dynamiclang.DynamicLang;
+import me.jorgetoh.dynamiclang.api.MessengerAPI;
 import me.jorgetoh.dynamiclang.util.HFile;
 import me.jorgetoh.dynamiclang.util.RegisteredPlugin;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class Messenger {
+public class Messenger implements MessengerAPI {
     private final DynamicLang plugin;
     public Messenger(DynamicLang plugin) {
         this.plugin = plugin;
@@ -36,5 +38,39 @@ public class Messenger {
         }
 
         return langFile.getConfig().getString("messages."+messageKey);
+    }
+
+    @Override
+    public void sendMessage(Player player, String pluginName, String messageKey) {
+        String message = getMessage(player, pluginName, messageKey);
+        if (message == null) return;
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+    }
+
+    @Override
+    public void sendMessage(Player player, String pluginName, String messageKey, String... args) {
+        String message = getMessage(player, pluginName, messageKey);
+        if (message == null) return;
+
+        for (int i = 0; i < args.length; i++) {
+            String placeholder = "%v" + (i + 1);
+            message = message.replace(placeholder, args[i]);
+        }
+
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+    }
+
+    @Override
+    public void sendGlobalMessage(String pluginName, String messageKey) {
+        plugin.getServer().getOnlinePlayers().forEach(player -> {
+            sendMessage(player, pluginName, messageKey);
+        });
+    }
+
+    @Override
+    public void sendGlobalMessage(String pluginName, String messageKey, String... args) {
+        plugin.getServer().getOnlinePlayers().forEach(player -> {
+            sendMessage(player, pluginName, messageKey, args);
+        });
     }
 }

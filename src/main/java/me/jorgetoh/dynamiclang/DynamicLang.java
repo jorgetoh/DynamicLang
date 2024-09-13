@@ -1,9 +1,12 @@
 package me.jorgetoh.dynamiclang;
 
+import me.jorgetoh.dynamiclang.api.MessengerAPI;
 import me.jorgetoh.dynamiclang.listeners.PlayerLocaleListener;
 import me.jorgetoh.dynamiclang.managers.ItemStackRenamer;
+import me.jorgetoh.dynamiclang.managers.Messenger;
 import me.jorgetoh.dynamiclang.util.LangEquivalences;
 import me.jorgetoh.dynamiclang.util.RegisteredPlugins;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -34,6 +37,9 @@ public final class DynamicLang extends JavaPlugin {
         }
 
         new PlayerLocaleListener(this);
+
+        getServer().getServicesManager().register(MessengerAPI.class, new Messenger(this), this, ServicePriority.Normal);
+
     }
 
     @Override
