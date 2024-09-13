@@ -1,4 +1,4 @@
-package me.jorgetoh.dynamiclang;
+package me.jorgetoh.dynamiclang.managers;
 
 
 import com.comphenix.protocol.PacketType;
@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
+import me.jorgetoh.dynamiclang.DynamicLang;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -27,13 +28,6 @@ public class ItemStackRenamer {
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         manager.addPacketListener(getSetSlotPacket());
         manager.addPacketListener(getWindowItem());
-    }
-
-    public void registerItemKey(String itemKey, String pluginName) {
-        itemKeys.put(itemKey, pluginName);
-    }
-    public void unregisterItemKey(String itemKey, String pluginName) {
-        itemKeys.remove(itemKey, pluginName);
     }
 
 
@@ -87,5 +81,13 @@ public class ItemStackRenamer {
                 }
             }
         };
+    }
+
+    public void loadItemKeys() {
+        itemKeys.clear();
+
+        plugin.getRegisteredPlugins().getRegisteredPluginsMap().forEach((pluginName, registeredPlugin) -> {
+
+        });
     }
 }

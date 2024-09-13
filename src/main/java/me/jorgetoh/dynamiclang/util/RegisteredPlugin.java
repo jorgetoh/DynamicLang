@@ -28,6 +28,9 @@ public class RegisteredPlugin {
         if (langFiles.isEmpty()) {
             throw new Exception("Something went wrong registering a plugin.");
         }
+        if (!langFiles.containsKey(plugin.getDefaultLang())) {
+            throw new Exception("The plugin is missing the default language. '"+plugin.getDefaultLang()+"'");
+        }
     }
 
     public void loadFiles() {
@@ -72,11 +75,4 @@ public class RegisteredPlugin {
         }
     }
 
-    public HashSet<String> getItemKeys() {
-        return itemKeys;
-    }
-
-    public void addItemKey(String itemKey) {
-        itemKeys.add(itemKey);
-    }
 }
