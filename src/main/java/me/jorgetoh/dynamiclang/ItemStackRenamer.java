@@ -16,10 +16,10 @@ import java.util.HashMap;
 
 public class ItemStackRenamer {
 
-    private final Main plugin;
+    private final DynamicLang plugin;
     private final HashMap<String, String> itemKeys;
 
-    public ItemStackRenamer(Main plugin) {
+    public ItemStackRenamer(DynamicLang plugin) {
         this.plugin = plugin;
 
         itemKeys = new HashMap<>();
