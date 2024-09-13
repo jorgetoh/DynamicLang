@@ -33,6 +33,10 @@ public class RegisteredPlugin {
         }
     }
 
+    public HFile getDefaultLang() {
+        return langFiles.get(plugin.getDefaultLang());
+    }
+
     public void loadFiles() {
         Plugin registered = plugin.getServer().getPluginManager().getPlugin(name);
         if (registered == null) {

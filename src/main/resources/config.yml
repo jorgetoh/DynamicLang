@@ -7,4 +7,19 @@
 #        By Jorgetoh - jorgetoh.me - contact@jorgetoh.me
 #
 
-default-lang: en_US
+# This is the default language file the plugin will use.
+default-lang: en_us
+# Set this to true to enable the item rename module. Requires ProtocolLib to work!
+item-rename: true
+
+lang-equivalences:
+  es_es:
+    - "ca_es"
+    - "es_ar"
+    - "es_cl"
+    - "es_ec"
+    - "es_mx"
+    - "es_uy"
+    - "es_ve"
+    - "esan"
+    - "eu_es"

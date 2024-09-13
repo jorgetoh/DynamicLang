@@ -10,10 +10,12 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import me.jorgetoh.dynamiclang.DynamicLang;
+import me.jorgetoh.dynamiclang.util.HFile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ItemStackRenamer {
 
@@ -24,6 +26,10 @@ public class ItemStackRenamer {
         this.plugin = plugin;
 
         itemKeys = new HashMap<>();
+    }
+
+    public void initializeItemRenamer() {
+        loadItemKeys();
 
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         manager.addPacketListener(getSetSlotPacket());
@@ -87,7 +93,15 @@ public class ItemStackRenamer {
         itemKeys.clear();
 
         plugin.getRegisteredPlugins().getRegisteredPluginsMap().forEach((pluginName, registeredPlugin) -> {
-
+            HFile hFile = registeredPlugin.getDefaultLang();
+            Objects.requireNonNull(hFile.getConfig().getConfigurationSection("items")).getKeys(false).forEach(itemKey -> {
+                if (itemKeys.containsKey(itemKey)) {
+                    plugin.getLogger().info("The plugin '"+pluginName+"' tried to register the key '"+itemKey+"' but its already registered by the plugin '"+itemKeys.get(itemKey)+"'");
+                } else {
+                    itemKeys.put(itemKey, pluginName);
+                }
+            });
         });
+        plugin.getLogger().info("Registered a total of "+itemKeys.size()+" items.");
     }
 }
