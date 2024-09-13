@@ -79,4 +79,7 @@ public class RegisteredPlugin {
         }
     }
 
+    public HashMap<String, HFile> getLangFiles() {
+        return langFiles;
+    }
 }

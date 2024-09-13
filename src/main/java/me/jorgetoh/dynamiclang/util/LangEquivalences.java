@@ -21,7 +21,7 @@ public class LangEquivalences {
         Objects.requireNonNull(plugin.getConfig().getConfigurationSection("lang-equivalences")).getKeys(false).forEach(langKey -> {
             List<String> stringList = plugin.getConfig().getStringList("lang-equivalences."+langKey);
             stringList.forEach(langItem -> {
-                langEquivalences.put(langItem, langKey);
+                langEquivalences.put(langItem.toLowerCase(), langKey.toLowerCase());
             });
         });
     }

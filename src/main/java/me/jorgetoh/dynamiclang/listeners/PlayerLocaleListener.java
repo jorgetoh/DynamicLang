@@ -26,7 +26,7 @@ public class PlayerLocaleListener implements Listener {
             @Override
             public void onPacketReceiving(PacketEvent event) {
                 if (event.getPacketType() == PacketType.Play.Client.SETTINGS) {
-                    DynamicLang.hPlayers.put(event.getPlayer().getUniqueId(), event.getPacket().getStrings().readSafely(0));
+                    DynamicLang.hPlayers.put(event.getPlayer().getUniqueId(), event.getPacket().getStrings().readSafely(0).toLowerCase());
                 }
             }
         };
