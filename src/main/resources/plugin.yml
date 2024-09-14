@@ -1,5 +1,7 @@
 name: DynamicLang
 version: '${project.version}'
-main: me.jorgetoh.dynamiclang.Main
+main: me.jorgetoh.dynamiclang.DynamicLang
 depend: [ ProtocolLib ]
-api-version: 1.19
+api-version: 1.21
+commands:
+  language:

@@ -3,6 +3,7 @@ package me.jorgetoh.dynamiclang;
 import me.jorgetoh.dynamiclang.api.MessengerAPI;
 import me.jorgetoh.dynamiclang.listeners.PlayerLocaleListener;
 import me.jorgetoh.dynamiclang.managers.ItemStackRenamer;
+import me.jorgetoh.dynamiclang.managers.LangCommand;
 import me.jorgetoh.dynamiclang.managers.Messenger;
 import me.jorgetoh.dynamiclang.util.LangEquivalences;
 import me.jorgetoh.dynamiclang.util.RegisteredPlugins;
@@ -17,7 +18,7 @@ public final class DynamicLang extends JavaPlugin {
 
 
     private String defaultLang;
-    public static HashMap<UUID, String> hPlayers = new HashMap<>();
+    //public static HashMap<UUID, String> hPlayers = new HashMap<>();
 
 
     private RegisteredPlugins registeredPlugins;
@@ -39,7 +40,7 @@ public final class DynamicLang extends JavaPlugin {
         new PlayerLocaleListener(this);
 
         getServer().getServicesManager().register(MessengerAPI.class, new Messenger(this), this, ServicePriority.Normal);
-
+        this.getCommand("language").setExecutor(new LangCommand(this));
     }
 
     @Override

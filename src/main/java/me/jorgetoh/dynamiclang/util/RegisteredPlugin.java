@@ -13,14 +13,14 @@ import java.util.HashSet;
 public class RegisteredPlugin {
 
     private final DynamicLang plugin;
-    private final String name;
+    private final String pluginName;
     private final HashSet<String> itemKeys;
     private final HashMap<String, HFile> langFiles;
 
 
     public RegisteredPlugin(DynamicLang plugin, String pluginName) throws Exception {
         this.plugin = plugin;
-        this.name = pluginName;
+        this.pluginName = pluginName;
         itemKeys = new HashSet<>();
         langFiles = new HashMap<>();
 
@@ -38,32 +38,32 @@ public class RegisteredPlugin {
     }
 
     public void loadFiles() {
-        Plugin registered = plugin.getServer().getPluginManager().getPlugin(name);
+        Plugin registered = plugin.getServer().getPluginManager().getPlugin(pluginName);
         if (registered == null) {
-            plugin.getLogger().info("The plugin '"+name+"' is not registered properly.");
+            plugin.getLogger().info("The plugin '"+pluginName+"' is not registered properly.");
             return;
         }
 
         File registeredFolder = registered.getDataFolder();
         File langFolder = new File(registeredFolder, "lang");
         if (!langFolder.exists()) {
-            plugin.getLogger().info("The lang folder for the plugin '"+name+"' does not exist.");
+            plugin.getLogger().info("The lang folder for the plugin '"+pluginName+"' does not exist.");
             return;
         }
         if (!langFolder.isDirectory()) {
-            plugin.getLogger().info("The lang file '"+name+"' is not a directory.");
+            plugin.getLogger().info("The lang file '"+langFolder.getName()+"' is not a directory.");
             return;
         }
 
         File[] files = langFolder.listFiles();
         if (files == null) {
-            plugin.getLogger().info("The lang folder for the plugin '"+name+"' is empty.");
+            plugin.getLogger().info("The lang folder for the plugin '"+pluginName+"' is empty.");
             return;
         }
 
         for (File file : files) {
             if (!file.isFile()) {
-                plugin.getLogger().info("Something went wrong loading the lang file '"+file.getName()+"' for the plugin '"+name+"'.");
+                plugin.getLogger().info("Something went wrong loading the lang file '"+file.getName()+"' for the plugin '"+pluginName+"'.");
                 continue;
             }
 
@@ -71,11 +71,13 @@ public class RegisteredPlugin {
             try {
                 config.load(file);
             } catch (IOException | InvalidConfigurationException e) {
-                plugin.getLogger().info("IOException | InvalidConfigurationException lang file: '"+file.getName()+"' plugin: '"+name+"'.");
+                plugin.getLogger().info("IOException | InvalidConfigurationException lang file: '"+file.getName()+"' plugin: '"+pluginName+"'.");
                 continue;
             }
             HFile hFile = new HFile(file, config);
-            langFiles.put(name, hFile);
+            String fileNameNoExtension = file.getName().substring(0, file.getName().lastIndexOf('.'));
+            plugin.getLogger().info("Registered file: " + fileNameNoExtension);
+            langFiles.put(fileNameNoExtension, hFile);
         }
     }
 

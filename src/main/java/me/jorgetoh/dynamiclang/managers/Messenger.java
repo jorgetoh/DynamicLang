@@ -22,10 +22,10 @@ public class Messenger implements MessengerAPI {
             return null;
         }
 
-        String playerLang = DynamicLang.hPlayers.get(player.getUniqueId());
+        String playerLang = player.getLocale().toLowerCase();
         HFile langFile = registeredPlugin.getLangFiles().get(playerLang);
         if (langFile == null) {
-            playerLang = plugin.getLangEquivalences().getPlayerLangEquivalence(player.getUniqueId());
+            playerLang = plugin.getLangEquivalences().getLangEquivalence(playerLang);
             if (playerLang == null) {
                 playerLang = plugin.getDefaultLang();
             }
@@ -73,4 +73,12 @@ public class Messenger implements MessengerAPI {
             sendMessage(player, pluginName, messageKey, args);
         });
     }
+
+    @Override
+    public void register(String pluginName) {
+        plugin.getLogger().info("The plugin '"+pluginName+"' is trying to connect to the API...");
+        plugin.getRegisteredPlugins().registerPlugin(pluginName);
+
+    }
+
 }

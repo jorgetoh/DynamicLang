@@ -10,4 +10,6 @@ public interface MessengerAPI {
     void sendGlobalMessage(String pluginName, String messageKey);
     void sendGlobalMessage(String pluginName, String messageKey, String... args);
 
+    void register(String pluginName);
+
 }

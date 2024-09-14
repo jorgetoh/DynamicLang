@@ -31,7 +31,7 @@ public class LangEquivalences {
     }
 
     // null means no language equivalence available.
-    public String getPlayerLangEquivalence(UUID playerId) {
+    /*public String getPlayerLangEquivalence(UUID playerId) {
         String playerLang = DynamicLang.hPlayers.get(playerId);
         if (playerLang == null) return null;
 
@@ -43,6 +43,6 @@ public class LangEquivalences {
         }
 
         return langEquivalence;
-    }
+    }*/
 
 }
