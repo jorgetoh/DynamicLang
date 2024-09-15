@@ -6,6 +6,7 @@ import me.jorgetoh.dynamiclang.util.HFile;
 import me.jorgetoh.dynamiclang.util.RegisteredPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
@@ -19,27 +20,9 @@ public class Messenger implements DynamicLangAPI {
 
 
     private Object getMessage(Player player, String pluginName, String messageKey) {
-        RegisteredPlugin registeredPlugin = plugin.getRegisteredPlugins().getRegisteredPluginsMap().get(pluginName);
+        HFile langFile = plugin.getFileUtil().getPlayerLangFile(player, pluginName);
 
-        if (registeredPlugin == null) {
-            plugin.getLogger().info("Tried to send a message but '" + pluginName + "' is not registered. key: " + messageKey);
-            return null;
-        }
-
-        String playerLang = player.getLocale().toLowerCase();
-        HFile langFile = registeredPlugin.getLangFiles().get(playerLang);
-        if (langFile == null) {
-            playerLang = plugin.getLangEquivalences().getLangEquivalence(playerLang);
-            if (playerLang == null) {
-                playerLang = plugin.getDefaultLang();
-            }
-            langFile = registeredPlugin.getLangFiles().get(playerLang);
-        }
-
-        if (langFile == null) {
-            plugin.getLogger().info("Could not find the lang file for the language '" + playerLang + "' plugin: '" + pluginName + "' . key: " + messageKey);
-            return null;
-        }
+        if (langFile == null) return null;
 
         if (langFile.getConfig().isList("messages." + messageKey)) {
             return langFile.getConfig().getStringList("messages." + messageKey);
@@ -50,6 +33,8 @@ public class Messenger implements DynamicLangAPI {
             return null;
         }
     }
+
+
 
     private void sendMessage(Player player, String pluginName, String messageKey) {
         Object message = getMessage(player, pluginName, messageKey);
@@ -113,6 +98,11 @@ public class Messenger implements DynamicLangAPI {
     @Override
     public void sendGlobalMessage(String messageKey, String... args) {
         sendGlobalMessage(getCallingPluginName(), messageKey, args);
+    }
+
+    @Override
+    public ItemStack getTranslateableItem(Player player, String itemKey, ItemStack itemStack) {
+        return plugin.getItemUtil().addCustomData(itemStack.clone(), getCallingPluginName(), itemKey);
     }
 
     @Override

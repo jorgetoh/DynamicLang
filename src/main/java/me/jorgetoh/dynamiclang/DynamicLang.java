@@ -5,6 +5,7 @@ import me.jorgetoh.dynamiclang.listeners.PlayerLocaleListener;
 import me.jorgetoh.dynamiclang.managers.ItemStackRenamer;
 import me.jorgetoh.dynamiclang.managers.LangCommand;
 import me.jorgetoh.dynamiclang.managers.Messenger;
+import me.jorgetoh.dynamiclang.util.FileUtil;
 import me.jorgetoh.dynamiclang.util.ItemUtil;
 import me.jorgetoh.dynamiclang.util.LangEquivalences;
 import me.jorgetoh.dynamiclang.util.RegisteredPlugins;
@@ -22,6 +23,7 @@ public final class DynamicLang extends JavaPlugin {
     private ItemStackRenamer itemStackRenamer;
     private LangEquivalences langEquivalences;
     private ItemUtil itemUtil;
+    private FileUtil fileUtil;
 
 
     @Override
@@ -29,6 +31,7 @@ public final class DynamicLang extends JavaPlugin {
         loadPluginConfig();
 
         itemUtil = new ItemUtil(this);
+        fileUtil = new FileUtil(this);
         langEquivalences = new LangEquivalences(this);
         registeredPlugins = new RegisteredPlugins(this);
         itemStackRenamer = new ItemStackRenamer(this);
@@ -68,5 +71,9 @@ public final class DynamicLang extends JavaPlugin {
 
     public ItemUtil getItemUtil() {
         return itemUtil;
+    }
+
+    public FileUtil getFileUtil() {
+        return fileUtil;
     }
 }

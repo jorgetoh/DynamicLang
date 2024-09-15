@@ -42,18 +42,9 @@ public class ItemStackRenamer {
 
                 for(int i = 0; i < itemStackStructureModifier.size(); i++) {
                     ItemStack itemStack = itemStackStructureModifier.read(i);
-
                     if (itemStack == null) continue;
-
-                    plugin.getLogger().info(itemStack.getType().toString());
-                    if (itemStack.getItemMeta() != null) {
-                        if (itemStack.getItemMeta().hasDisplayName()) {
-                            ItemMeta itemMeta = itemStack.getItemMeta();
-                            itemMeta.setDisplayName("PRUEBA ! ! !");
-                            itemStack.setItemMeta(itemMeta);
-                            itemStackStructureModifier.write(i, itemStack);
-                        }
-                    }
+                    ItemStack translated = ((DynamicLang) plugin).getItemUtil().translateItem(itemStack, event.getPlayer());
+                    itemStackStructureModifier.write(i, translated);
                 }
             }
         };
@@ -70,20 +61,14 @@ public class ItemStackRenamer {
                     ItemStack itemStack = itemStackStructureModifier.read(i);
 
                     if (itemStack == null) continue;
-
-                    plugin.getLogger().info(itemStack.getType().toString());
-                    if (itemStack.getItemMeta() != null) {
-                        if (itemStack.getItemMeta().hasDisplayName()) {
-                            ItemMeta itemMeta = itemStack.getItemMeta();
-                            itemMeta.setDisplayName("PRUEBA ! ! !");
-                            itemStack.setItemMeta(itemMeta);
-                            itemStackStructureModifier.write(i, itemStack);
-                        }
-                    }
+                    ItemStack translated = ((DynamicLang) plugin).getItemUtil().translateItem(itemStack, event.getPlayer());
+                    itemStackStructureModifier.write(i, translated);
                 }
             }
         };
     }
+
+
 
     /*public void loadItemKeys() {
         itemKeys.clear();

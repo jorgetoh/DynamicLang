@@ -2,12 +2,16 @@ package me.jorgetoh.dynamiclang.util;
 
 import me.jorgetoh.dynamiclang.DynamicLang;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
 
 public class ItemUtil {
 
@@ -89,6 +93,54 @@ public class ItemUtil {
             }
         }
         return null;
+    }
+
+
+    public ItemStack translateItem(ItemStack itemStack, Player player) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) return itemStack;
+        if (!hasCustomData(itemStack)) return itemStack;
+
+        String[] customData = getCustomData(itemStack);
+        plugin.getLogger().info(customData.toString());
+        HFile hFile = plugin.getFileUtil().getPlayerLangFile(player, customData[0]);
+        if (hFile == null) return itemStack;
+
+        ItemStack temporalItem = itemStack.clone();
+        String itemName = hFile.getConfig().getString("items."+customData[1]+".name");
+        List<String> itemLore = hFile.getConfig().getStringList("items."+customData[1]+".lore");
+
+        setDisplayName(temporalItem, itemName);
+        setLore(temporalItem, itemLore);
+
+        return temporalItem;
+    }
+
+    public void setDisplayName(ItemStack itemStack, String name) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            return;
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+            itemStack.setItemMeta(meta);
+        }
+    }
+
+
+    public void setLore(ItemStack itemStack, List<String> lore) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            return;
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
+            List<String> formattedLore = lore.stream()
+                    .map(line -> ChatColor.translateAlternateColorCodes('&', line))
+                    .toList();
+            meta.setLore(formattedLore);
+            itemStack.setItemMeta(meta);
+        }
     }
 
 }
