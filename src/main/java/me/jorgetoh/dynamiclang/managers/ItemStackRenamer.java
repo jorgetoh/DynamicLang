@@ -10,26 +10,22 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import me.jorgetoh.dynamiclang.DynamicLang;
-import me.jorgetoh.dynamiclang.util.HFile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.HashMap;
-import java.util.Objects;
 
 public class ItemStackRenamer {
 
     private final DynamicLang plugin;
-    private final HashMap<String, String> itemKeys;
+    //private final HashMap<String, String> itemKeys;
 
     public ItemStackRenamer(DynamicLang plugin) {
         this.plugin = plugin;
 
-        itemKeys = new HashMap<>();
+        //itemKeys = new HashMap<>();
     }
 
     public void initializeItemRenamer() {
-        loadItemKeys();
+        //loadItemKeys();
 
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         manager.addPacketListener(getSetSlotPacket());
@@ -89,7 +85,7 @@ public class ItemStackRenamer {
         };
     }
 
-    public void loadItemKeys() {
+    /*public void loadItemKeys() {
         itemKeys.clear();
 
         plugin.getRegisteredPlugins().getRegisteredPluginsMap().forEach((pluginName, registeredPlugin) -> {
@@ -103,5 +99,5 @@ public class ItemStackRenamer {
             });
         });
         plugin.getLogger().info("Registered a total of "+itemKeys.size()+" items.");
-    }
+    }*/
 }

@@ -1,18 +1,15 @@
 package me.jorgetoh.dynamiclang;
 
-import me.jorgetoh.dynamiclang.api.MessengerAPI;
+import me.jorgetoh.dynamiclang.api.DynamicLangAPI;
 import me.jorgetoh.dynamiclang.listeners.PlayerLocaleListener;
 import me.jorgetoh.dynamiclang.managers.ItemStackRenamer;
 import me.jorgetoh.dynamiclang.managers.LangCommand;
 import me.jorgetoh.dynamiclang.managers.Messenger;
+import me.jorgetoh.dynamiclang.util.ItemUtil;
 import me.jorgetoh.dynamiclang.util.LangEquivalences;
 import me.jorgetoh.dynamiclang.util.RegisteredPlugins;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
 
 public final class DynamicLang extends JavaPlugin {
 
@@ -24,22 +21,25 @@ public final class DynamicLang extends JavaPlugin {
     private RegisteredPlugins registeredPlugins;
     private ItemStackRenamer itemStackRenamer;
     private LangEquivalences langEquivalences;
+    private ItemUtil itemUtil;
 
 
     @Override
     public void onEnable() {
         loadPluginConfig();
 
+        itemUtil = new ItemUtil(this);
         langEquivalences = new LangEquivalences(this);
         registeredPlugins = new RegisteredPlugins(this);
         itemStackRenamer = new ItemStackRenamer(this);
+
         if (getConfig().getBoolean("item-rename")) {
             itemStackRenamer.initializeItemRenamer();
         }
 
         new PlayerLocaleListener(this);
 
-        getServer().getServicesManager().register(MessengerAPI.class, new Messenger(this), this, ServicePriority.Normal);
+        getServer().getServicesManager().register(DynamicLangAPI.class, new Messenger(this), this, ServicePriority.Normal);
         this.getCommand("language").setExecutor(new LangCommand(this));
     }
 
@@ -64,5 +64,9 @@ public final class DynamicLang extends JavaPlugin {
 
     public LangEquivalences getLangEquivalences() {
         return langEquivalences;
+    }
+
+    public ItemUtil getItemUtil() {
+        return itemUtil;
     }
 }
