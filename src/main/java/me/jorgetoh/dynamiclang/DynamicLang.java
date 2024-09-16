@@ -18,9 +18,6 @@ public final class DynamicLang extends JavaPlugin {
 
 
     private String defaultLang;
-    //public static HashMap<UUID, String> hPlayers = new HashMap<>();
-
-
     private RegisteredPlugins registeredPlugins;
     private ItemStackRenamer itemStackRenamer;
     private LangEquivalences langEquivalences;
@@ -43,8 +40,6 @@ public final class DynamicLang extends JavaPlugin {
             ProtocolLibrary.getProtocolManager().addPacketListener(itemStackRenamer);
             getServer().getPluginManager().registerEvents(itemStackRenamer, this);
         }
-
-        //new PlayerLocaleListener(this);
 
         getServer().getServicesManager().register(DynamicLangAccessor.class, new DynamicLangAccessorImplementation(this), this, ServicePriority.Normal);
         this.getCommand("language").setExecutor(new LangCommand(this));
