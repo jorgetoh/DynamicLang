@@ -116,6 +116,8 @@ public class MessengerImplementation implements DynamicLangAPI {
     }
 
 
+    // reading stack trace bad bad but I keep it because its cool
+
     /*private String getCallingPluginName() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
