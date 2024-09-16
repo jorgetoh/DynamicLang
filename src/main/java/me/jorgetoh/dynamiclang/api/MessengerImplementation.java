@@ -1,22 +1,25 @@
-package me.jorgetoh.dynamiclang.managers;
+package me.jorgetoh.dynamiclang.api;
 
 import me.jorgetoh.dynamiclang.DynamicLang;
-import me.jorgetoh.dynamiclang.api.DynamicLangAPI;
 import me.jorgetoh.dynamiclang.util.HFile;
-import me.jorgetoh.dynamiclang.util.RegisteredPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
-public class Messenger implements DynamicLangAPI {
+public class MessengerImplementation implements DynamicLangAPI {
     private final DynamicLang plugin;
-    public Messenger(DynamicLang plugin) {
+    private final Plugin caller;
+
+
+    public MessengerImplementation(DynamicLang plugin, Plugin caller) {
         this.plugin = plugin;
+        this.caller = caller;
     }
+
+
 
 
     private Object getMessage(Player player, String pluginName, String messageKey) {
@@ -82,27 +85,27 @@ public class Messenger implements DynamicLangAPI {
 
     @Override
     public void sendMessage(Player player, String messageKey) {
-        sendMessage(player, getCallingPluginName(), messageKey);
+        sendMessage(player, caller.getName(), messageKey);
     }
 
     @Override
     public void sendMessage(Player player, String messageKey, String... args) {
-        sendMessage(player, getCallingPluginName(), messageKey, args);
+        sendMessage(player, caller.getName(), messageKey, args);
     }
 
     @Override
     public void sendGlobalMessage(String messageKey) {
-        sendGlobalMessage(getCallingPluginName(), messageKey);
+        sendGlobalMessage(caller.getName(), messageKey);
     }
 
     @Override
     public void sendGlobalMessage(String messageKey, String... args) {
-        sendGlobalMessage(getCallingPluginName(), messageKey, args);
+        sendGlobalMessage(caller.getName(), messageKey, args);
     }
 
     @Override
     public ItemStack getTranslateableItem(Player player, String itemKey, ItemStack itemStack) {
-        return plugin.getItemUtil().addCustomData(itemStack.clone(), getCallingPluginName(), itemKey);
+        return plugin.getItemUtil().addCustomData(itemStack.clone(), caller.getName(), itemKey);
     }
 
     @Override
@@ -113,7 +116,7 @@ public class Messenger implements DynamicLangAPI {
     }
 
 
-    private String getCallingPluginName() {
+    /*private String getCallingPluginName() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
         for (StackTraceElement element : stackTrace) {
@@ -151,6 +154,6 @@ public class Messenger implements DynamicLangAPI {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 }

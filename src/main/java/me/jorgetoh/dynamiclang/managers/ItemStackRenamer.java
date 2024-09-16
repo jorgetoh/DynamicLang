@@ -14,6 +14,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -88,9 +89,24 @@ public class ItemStackRenamer extends PacketAdapter implements Listener {
         packet.getSlotStackPairLists().write(0, equipmentList);
     }
 
+
+    /*
+    I update the inventory 1 tick after changing language or gamemode so the player
+    always have the right item data, but I'm pretty sure there is a better way of achieving this.
+    */
     @EventHandler
     public void playerLocaleEvent(PlayerLocaleChangeEvent event) {
-        event.getPlayer().updateInventory();
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            event.getPlayer().updateInventory();
+        });
+
+    }
+    @EventHandler
+    public void playerLocaleEvent(PlayerGameModeChangeEvent event) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            event.getPlayer().updateInventory();
+        });
+
     }
 
 

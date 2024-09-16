@@ -2,10 +2,11 @@ package me.jorgetoh.dynamiclang;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import me.jorgetoh.dynamiclang.api.DynamicLangAPI;
-import me.jorgetoh.dynamiclang.listeners.PlayerLocaleListener;
+import me.jorgetoh.dynamiclang.api.DynamicLangAccessor;
+import me.jorgetoh.dynamiclang.api.DynamicLangAccessorImplementation;
 import me.jorgetoh.dynamiclang.managers.ItemStackRenamer;
 import me.jorgetoh.dynamiclang.managers.LangCommand;
-import me.jorgetoh.dynamiclang.managers.Messenger;
+import me.jorgetoh.dynamiclang.api.MessengerImplementation;
 import me.jorgetoh.dynamiclang.util.FileUtil;
 import me.jorgetoh.dynamiclang.util.ItemUtil;
 import me.jorgetoh.dynamiclang.util.LangEquivalences;
@@ -45,7 +46,7 @@ public final class DynamicLang extends JavaPlugin {
 
         //new PlayerLocaleListener(this);
 
-        getServer().getServicesManager().register(DynamicLangAPI.class, new Messenger(this), this, ServicePriority.Normal);
+        getServer().getServicesManager().register(DynamicLangAccessor.class, new DynamicLangAccessorImplementation(this), this, ServicePriority.Normal);
         this.getCommand("language").setExecutor(new LangCommand(this));
     }
 
