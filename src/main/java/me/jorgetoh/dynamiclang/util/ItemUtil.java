@@ -101,7 +101,6 @@ public class ItemUtil {
         if (!hasCustomData(itemStack)) return itemStack;
 
         String[] customData = getCustomData(itemStack);
-        plugin.getLogger().info(customData.toString());
         HFile hFile = plugin.getFileUtil().getPlayerLangFile(player, customData[0]);
         if (hFile == null) return itemStack;
 

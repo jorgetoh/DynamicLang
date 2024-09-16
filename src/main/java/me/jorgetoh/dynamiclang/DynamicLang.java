@@ -1,5 +1,6 @@
 package me.jorgetoh.dynamiclang;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import me.jorgetoh.dynamiclang.api.DynamicLangAPI;
 import me.jorgetoh.dynamiclang.listeners.PlayerLocaleListener;
 import me.jorgetoh.dynamiclang.managers.ItemStackRenamer;
@@ -34,13 +35,15 @@ public final class DynamicLang extends JavaPlugin {
         fileUtil = new FileUtil(this);
         langEquivalences = new LangEquivalences(this);
         registeredPlugins = new RegisteredPlugins(this);
-        itemStackRenamer = new ItemStackRenamer(this);
+
 
         if (getConfig().getBoolean("item-rename")) {
-            itemStackRenamer.initializeItemRenamer();
+            itemStackRenamer = new ItemStackRenamer(this);
+            ProtocolLibrary.getProtocolManager().addPacketListener(itemStackRenamer);
+            getServer().getPluginManager().registerEvents(itemStackRenamer, this);
         }
 
-        new PlayerLocaleListener(this);
+        //new PlayerLocaleListener(this);
 
         getServer().getServicesManager().register(DynamicLangAPI.class, new Messenger(this), this, ServicePriority.Normal);
         this.getCommand("language").setExecutor(new LangCommand(this));

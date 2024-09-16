@@ -2,38 +2,99 @@ package me.jorgetoh.dynamiclang.managers;
 
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.Pair;
 import me.jorgetoh.dynamiclang.DynamicLang;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-public class ItemStackRenamer {
+import java.util.List;
+
+public class ItemStackRenamer extends PacketAdapter implements Listener {
 
     private final DynamicLang plugin;
-    //private final HashMap<String, String> itemKeys;
 
     public ItemStackRenamer(DynamicLang plugin) {
+        super(plugin, ListenerPriority.NORMAL,
+                PacketType.Play.Server.SET_SLOT,
+                PacketType.Play.Server.WINDOW_ITEMS,
+                PacketType.Play.Server.ENTITY_EQUIPMENT
+        );
+
         this.plugin = plugin;
-
-        //itemKeys = new HashMap<>();
     }
 
-    public void initializeItemRenamer() {
-        //loadItemKeys();
+    @Override
+    public void onPacketSending(PacketEvent event) {
+        PacketContainer packet = event.getPacket();
+        Player player = event.getPlayer();
 
-        ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-        manager.addPacketListener(getSetSlotPacket());
-        manager.addPacketListener(getWindowItem());
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+
+        if (event.getPacketType() == PacketType.Play.Server.SET_SLOT) {
+            modifyItemStack(packet.getItemModifier(), player);
+        }
+
+        if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
+            modifyItemStackList(packet.getItemListModifier(), player);
+        }
+
+        if (event.getPacketType() == PacketType.Play.Server.ENTITY_EQUIPMENT) {
+            modifyEntityEquipment(packet, player);
+        }
+    }
+
+    private void modifyItemStack(StructureModifier<ItemStack> itemStackModifier, Player player) {
+        for (int i = 0; i < itemStackModifier.size(); i++) {
+            ItemStack itemStack = itemStackModifier.read(i);
+
+            if (itemStack == null) continue;
+            ItemStack translated = plugin.getItemUtil().translateItem(itemStack, player);
+            itemStackModifier.write(i, translated);
+        }
+    }
+
+    private void modifyItemStackList(StructureModifier<List<ItemStack>> itemStackListModifier, Player player) {
+        List<ItemStack> itemStackList = itemStackListModifier.read(0);
+        for (int i = 0; i < itemStackList.size(); i++) {
+            ItemStack itemStack = itemStackList.get(i);
+            if (itemStack != null) {
+                ItemStack translated = plugin.getItemUtil().translateItem(itemStack, player);
+                itemStackList.set(i, translated);
+            }
+        }
+        itemStackListModifier.write(0, itemStackList);
+    }
+
+    private void modifyEntityEquipment(PacketContainer packet, Player player) {
+        List<Pair<EnumWrappers.ItemSlot, ItemStack>> equipmentList = packet.getSlotStackPairLists().read(0);
+        for (int i = 0; i < equipmentList.size(); i++) {
+            Pair<EnumWrappers.ItemSlot, ItemStack> equipment = equipmentList.get(i);
+            ItemStack itemStack = equipment.getSecond();
+            if (itemStack != null) {
+                ItemStack translated = plugin.getItemUtil().translateItem(itemStack, player);
+                equipmentList.set(i, new Pair<>(equipment.getFirst(), translated));
+            }
+        }
+        packet.getSlotStackPairLists().write(0, equipmentList);
+    }
+
+    @EventHandler
+    public void playerLocaleEvent(PlayerLocaleChangeEvent event) {
+        event.getPlayer().updateInventory();
     }
 
 
-    private PacketAdapter getSetSlotPacket() {
+    /*private PacketAdapter getSetSlotPacket() {
         return new PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SET_SLOT) {
             @Override
             public void onPacketSending(PacketEvent event) {
@@ -66,7 +127,9 @@ public class ItemStackRenamer {
                 }
             }
         };
-    }
+    }*/
+
+
 
 
 
