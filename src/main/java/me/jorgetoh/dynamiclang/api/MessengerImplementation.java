@@ -3,6 +3,7 @@ package me.jorgetoh.dynamiclang.api;
 import me.jorgetoh.dynamiclang.DynamicLang;
 import me.jorgetoh.dynamiclang.util.HFile;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -22,8 +23,8 @@ public class MessengerImplementation implements DynamicLangAPI {
 
 
 
-    private Object getMessage(Player player, String pluginName, String messageKey) {
-        HFile langFile = plugin.getFileUtil().getPlayerLangFile(player, pluginName);
+    private Object getMessage(String locale, String pluginName, String messageKey) {
+        HFile langFile = plugin.getFileUtil().getPlayerLangFile(locale, pluginName);
 
         if (langFile == null) return null;
 
@@ -39,8 +40,9 @@ public class MessengerImplementation implements DynamicLangAPI {
 
 
 
-    private void sendMessage(Player player, String pluginName, String messageKey) {
-        Object message = getMessage(player, pluginName, messageKey);
+    private void sendMessage(CommandSender player, String pluginName, String messageKey) {
+        Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
+
         if (message == null) return;
         if (message instanceof String singleMessage) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', singleMessage));
@@ -50,8 +52,9 @@ public class MessengerImplementation implements DynamicLangAPI {
         }
     }
 
-    private void sendMessage(Player player, String pluginName, String messageKey, String... args) {
-        Object message = getMessage(player, pluginName, messageKey);
+    private void sendMessage(CommandSender player, String pluginName, String messageKey, String... args) {
+        Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
+
         if (message == null) return;
         if (message instanceof String singleMessage) {
             for (int i = 0; i < args.length; i++) {
@@ -84,12 +87,12 @@ public class MessengerImplementation implements DynamicLangAPI {
     }
 
     @Override
-    public void sendMessage(Player player, String messageKey) {
+    public void sendMessage(CommandSender player, String messageKey) {
         sendMessage(player, caller.getName(), messageKey);
     }
 
     @Override
-    public void sendMessage(Player player, String messageKey, String... args) {
+    public void sendMessage(CommandSender player, String messageKey, String... args) {
         sendMessage(player, caller.getName(), messageKey, args);
     }
 

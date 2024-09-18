@@ -12,7 +12,7 @@ public class FileUtil {
         this.plugin = plugin;
     }
 
-    public HFile getPlayerLangFile(Player player, String pluginName) {
+    public HFile getPlayerLangFile(String locale, String pluginName) {
         RegisteredPlugin registeredPlugin = plugin.getRegisteredPlugins().getRegisteredPluginsMap().get(pluginName);
 
         if (registeredPlugin == null) {
@@ -20,7 +20,7 @@ public class FileUtil {
             return null;
         }
 
-        String playerLang = player.getLocale().toLowerCase();
+        String playerLang = locale.toLowerCase();
         HFile langFile = registeredPlugin.getLangFiles().get(playerLang);
         if (langFile == null) {
             playerLang = plugin.getLangEquivalences().getLangEquivalence(playerLang);
