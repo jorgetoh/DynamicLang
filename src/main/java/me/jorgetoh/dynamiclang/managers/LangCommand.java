@@ -16,11 +16,12 @@ public class LangCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
+
             sender.sendMessage("You can only use this command as a player.");
             return true;
         }
-
+        Player player = (Player) sender;
         player.sendMessage("Your current language is: " + player.getLocale());
         return true;
     }

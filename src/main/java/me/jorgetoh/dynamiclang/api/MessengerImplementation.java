@@ -44,7 +44,8 @@ public class MessengerImplementation implements DynamicLangAPI {
         Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
 
         if (message == null) return;
-        if (message instanceof String singleMessage) {
+        if (message instanceof String) {
+            String singleMessage = (String) message;
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', singleMessage));
         } else if (message instanceof List) {
             List<String> messageList = (List<String>) message;
@@ -56,7 +57,8 @@ public class MessengerImplementation implements DynamicLangAPI {
         Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
 
         if (message == null) return;
-        if (message instanceof String singleMessage) {
+        if (message instanceof String ) {
+            String singleMessage = (String) message;
             for (int i = 0; i < args.length; i++) {
                 String placeholder = "%v" + (i + 1);
                 singleMessage = singleMessage.replace(placeholder, args[i]);
