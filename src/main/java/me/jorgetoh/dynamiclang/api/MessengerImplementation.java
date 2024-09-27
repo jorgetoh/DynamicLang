@@ -109,7 +109,7 @@ public class MessengerImplementation implements DynamicLangAPI {
     }
 
     @Override
-    public ItemStack getTranslateableItem(Player player, String itemKey, ItemStack itemStack) {
+    public ItemStack getTranslateableItem(String itemKey, ItemStack itemStack) {
         return plugin.getItemUtil().addCustomData(itemStack.clone(), caller.getName(), itemKey);
     }
 
