@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessengerImplementation implements DynamicLangAPI {
     private final DynamicLang plugin;
@@ -38,6 +39,51 @@ public class MessengerImplementation implements DynamicLangAPI {
         }
     }
 
+    private Object formatMessage(CommandSender player, String pluginName, String messageKey) {
+        Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
+
+        if (message == null) return null;
+
+        if (message instanceof String) {
+            String singleMessage = (String) message;
+            return ChatColor.translateAlternateColorCodes('&', singleMessage);
+        } else if (message instanceof List) {
+            List<String> messageList = (List<String>) message;
+            return messageList.stream()
+                    .map(msg -> ChatColor.translateAlternateColorCodes('&', msg))
+                    .collect(Collectors.toList());
+        }
+
+        return null;
+    }
+
+    private Object formatMessage(CommandSender player, String pluginName, String messageKey, String... args) {
+        Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
+
+        if (message == null) return null;
+
+        if (message instanceof String) {
+            String singleMessage = (String) message;
+            for (int i = 0; i < args.length; i++) {
+                String placeholder = "{" + (i + 1) + "}";
+                singleMessage = singleMessage.replace(placeholder, args[i]);
+            }
+            return ChatColor.translateAlternateColorCodes('&', singleMessage);
+        } else if (message instanceof List) {
+            List<String> messageList = (List<String>) message;
+            return messageList.stream()
+                    .map(msg -> {
+                        for (int i = 0; i < args.length; i++) {
+                            String placeholder = "{" + (i + 1) + "}";
+                            msg = msg.replace(placeholder, args[i]);
+                        }
+                        return ChatColor.translateAlternateColorCodes('&', msg);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        return null;
+    }
 
 
     private void sendMessage(CommandSender player, String pluginName, String messageKey) {
@@ -57,18 +103,21 @@ public class MessengerImplementation implements DynamicLangAPI {
         Object message = getMessage((player instanceof Player) ? ((Player) player).getLocale() : plugin.getDefaultLang(), pluginName, messageKey);
 
         if (message == null) return;
-        if (message instanceof String ) {
+
+        if (message instanceof String) {
             String singleMessage = (String) message;
             for (int i = 0; i < args.length; i++) {
-                String placeholder = "%v" + (i + 1);
+                String placeholder = "{" + (i + 1) + "}";
                 singleMessage = singleMessage.replace(placeholder, args[i]);
             }
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', singleMessage));
-        } else if (message instanceof List) {
+        }
+
+        else if (message instanceof List) {
             List<String> messageList = (List<String>) message;
             for (String msg : messageList) {
                 for (int i = 0; i < args.length; i++) {
-                    String placeholder = "%v" + (i + 1);
+                    String placeholder = "{" + (i + 1) + "}";
                     msg = msg.replace(placeholder, args[i]);
                 }
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
@@ -111,6 +160,16 @@ public class MessengerImplementation implements DynamicLangAPI {
     @Override
     public ItemStack getTranslateableItem(String itemKey, ItemStack itemStack) {
         return plugin.getItemUtil().addCustomData(itemStack.clone(), caller.getName(), itemKey);
+    }
+
+    @Override
+    public Object formatMessage(CommandSender sender, String messageKey) {
+        return formatMessage(sender, caller.getName(), messageKey);
+    }
+
+    @Override
+    public Object formatMessage(CommandSender sender, String messageKey, String... args) {
+        return formatMessage(sender, caller.getName(), messageKey, args);
     }
 
     @Override
