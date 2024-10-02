@@ -1,15 +1,22 @@
 Connect to the API:
 ```java
-MessengerAPI dynamicLang = getServer().getServicesManager().load(MessengerAPI.class);
-if (dynamicLang == null) {
-    getLogger().severe("DynamicLang API not found! Shutting down the server.");
-    getServer().shutdown();
+private void loadDynamicLang() {
+    DynamicLangAccessor accessor = getServer().getServicesManager().load(DynamicLangAccessor.class);
+    if (accessor != null) {
+        this.dynamicLang = accessor.get(this);
+    }
+
+    if (dynamicLang == null) {
+        getLogger().severe("DynamicLang API not found! Shutting down the server.");
+        getServer().shutdown();
+    }
+    dynamicLang.register(getName());
 }
-dynamicLang.register(getName());
 ```
 Lang files should be loaded into the plugin folder before registering the plugin.
 
 Dynamically load all lang files:
+> This only works with vanilla spigot for some reason, does not work with paper.
 ```java
 public void loadLangFiles() {
     final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
