@@ -176,7 +176,6 @@ public class MessengerImplementation implements DynamicLangAPI {
     public void register(String pluginName) {
         plugin.getLogger().info("The plugin '"+pluginName+"' is trying to connect to the API...");
         plugin.getRegisteredPlugins().registerPlugin(pluginName);
-
     }
 
 

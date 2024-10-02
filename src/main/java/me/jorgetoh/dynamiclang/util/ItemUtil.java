@@ -101,13 +101,14 @@ public class ItemUtil {
         if (!hasCustomData(itemStack)) return itemStack;
 
         String[] customData = getCustomData(itemStack);
+
+
         HFile hFile = plugin.getFileUtil().getPlayerLangFile(player.getLocale(), customData[0]);
         if (hFile == null) return itemStack;
 
         ItemStack temporalItem = itemStack.clone();
         String itemName = hFile.getConfig().getString("items."+customData[1]+".name");
         List<String> itemLore = hFile.getConfig().getStringList("items."+customData[1]+".lore");
-
         setDisplayName(temporalItem, itemName);
         setLore(temporalItem, itemLore);
 
